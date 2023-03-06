@@ -6,14 +6,14 @@ namespace Poop.Player
     {
         private const float AnimationBlendSpeed = 0.1f;
         private Animator animator;
-        private PlayerController player;
+        private PlayerControllerBase player;
 
         private int verticalHash;
 
         private void Start()
         {
             animator = GetComponent<Animator>();
-            player = GetComponentInParent<PlayerController>();
+            player = GetComponentInParent<PlayerControllerBase>();
 
             verticalHash = Animator.StringToHash("Vertical");
         }

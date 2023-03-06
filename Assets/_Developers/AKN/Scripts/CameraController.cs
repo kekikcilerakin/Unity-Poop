@@ -7,44 +7,39 @@ namespace Poop.Player
     {
         private InputManager inputManager;
 
-        [SerializeField] private Transform targetTransform;
-        [SerializeField] private float TopClamp = 70.0f;
-        [SerializeField] private float BottomClamp = -30.0f;
+        [SerializeField] private Transform target;
+        [SerializeField] private float topClamp = 70.0f;
+        [SerializeField] private float bottomClamp = -30.0f;
 
-        [SerializeField] private float CameraAngleOverride = 0.0f;
-
-        private float _cinemachineTargetYaw;
-        private float _cinemachineTargetPitch;
-        private const float _threshold = 0.01f;
+        #region Cached Variables
+        private float cinemachineTargetY;
+        private float cinemachineTargetX;
+        #endregion
 
         private void Start()
         {
             inputManager = InputManager.Instance;
-            _cinemachineTargetYaw = targetTransform.transform.rotation.eulerAngles.y;
+            cinemachineTargetY = target.transform.rotation.eulerAngles.y;
         }
 
         private void LateUpdate()
         {
-            Rotation();
+            HandleRotate();
         }
 
-        private void Rotation()
+        private void HandleRotate()
         {
-            if (inputManager.Look.sqrMagnitude >= _threshold)
-            {
-                //Don't multiply mouse input by Time.deltaTime;
-                //float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-                float deltaTimeMultiplier = 1.0f;
+            //Don't multiply mouse input by Time.deltaTime;
+            //float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+            float deltaTimeMultiplier = 1.0f;
 
-                _cinemachineTargetYaw += inputManager.Look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += inputManager.Look.y * deltaTimeMultiplier;
-            }
+            cinemachineTargetY += inputManager.Look.x * deltaTimeMultiplier;
+            cinemachineTargetX += inputManager.Look.y * deltaTimeMultiplier;
 
-            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+            cinemachineTargetY = ClampAngle(cinemachineTargetY, float.MinValue, float.MaxValue);
+            cinemachineTargetX = ClampAngle(cinemachineTargetX, bottomClamp, topClamp);
 
-            targetTransform.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-                _cinemachineTargetYaw, 0.0f);
+            target.transform.rotation = Quaternion.Euler(cinemachineTargetX, cinemachineTargetY, 0.0f);
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
@@ -53,6 +48,5 @@ namespace Poop.Player
             if (lfAngle > 360f) lfAngle -= 360f;
             return Mathf.Clamp(lfAngle, lfMin, lfMax);
         }
-
     }
 }
