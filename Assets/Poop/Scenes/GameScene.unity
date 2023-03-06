@@ -845,7 +845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 073422d70f174534c8f3d1101282747a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTransform: {fileID: 0}
+  targetTransform: {fileID: 3438153357754974084}
   TopClamp: 70
   BottomClamp: -30
   CameraAngleOverride: 0
