@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,8 +6,10 @@ namespace Poop.Manager
 {
     public class InputManager : MonoBehaviour
     {
-        public static InputManager Instance;
+        public static InputManager Instance { get; private set; }
 
+        public event EventHandler OnInteractAction;
+        
         private PlayerInputActions inputActions;
 
         public Vector2 Move { get; private set; }
@@ -23,6 +26,18 @@ namespace Poop.Manager
             inputActions.Player.Look.performed += OnLook;
             inputActions.Player.Run.performed += OnRun;
             inputActions.Player.Run.canceled += OnRun;
+
+            inputActions.Player.Interact.performed += Interact_performed;
+        }
+
+        private void OnEnable()
+        {
+            inputActions.Enable();
+        }
+
+        private void OnDisable()
+        {
+            inputActions.Disable();
         }
 
         private void OnMove(InputAction.CallbackContext context)
@@ -40,14 +55,9 @@ namespace Poop.Manager
             Run = context.ReadValueAsButton();
         }
 
-        private void OnEnable()
+        private void Interact_performed(InputAction.CallbackContext obj)
         {
-            inputActions.Enable();
-        }
-
-        private void OnDisable()
-        {
-            inputActions.Disable();
+            OnInteractAction?.Invoke(this, EventArgs.Empty);
         }
     }
 }

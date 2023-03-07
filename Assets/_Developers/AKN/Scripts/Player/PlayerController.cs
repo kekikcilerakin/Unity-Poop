@@ -1,17 +1,29 @@
 using Poop.Manager;
+using Poop.Player.Inventory;
 using UnityEngine;
 
 namespace Poop.Player
 {
-    public class PlayerControllerBase : MonoBehaviour
+    public enum PlayerType
     {
-        private InputManager inputManager;
+        None,
+        Student,
+        Principal
+    }
+
+    public class PlayerController : MonoBehaviour
+    {
+        [SerializeField] private PlayerType playerType;
+
         private CharacterController characterController;
 
         [Tooltip("Student = 1, Principal = 1.7")]
         [SerializeField] private float walkSpeed = 0.0f;
         [Tooltip("Student = 2.8, Principal = 3")]
         [SerializeField] private float runSpeed = 0.0f;
+
+        [SerializeField] private LayerMask itemLayerMask;
+        [SerializeField] private float interactDistance = 6f;
 
         #region Constant Variables
         private const float Gravity = -9.81f;
@@ -27,15 +39,29 @@ namespace Poop.Player
         private float rotationVelocity;
         #endregion
 
-        private void Start()
+        public virtual void Start()
         {
             if (walkSpeed == 0.0f || runSpeed == 0.0f) Debug.LogWarning("Walk and run speed are not set.");
 
-            inputManager = InputManager.Instance;
             characterController = GetComponent<CharacterController>();
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+
+            InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
+        }
+
+        private void InputManager_OnInteractAction(object sender, System.EventArgs e)
+        {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit raycastHit, interactDistance, itemLayerMask))
+            {
+                if (raycastHit.transform.TryGetComponent(out Item item))
+                {
+                    item.Interact();
+                }
+            }
+            //Debug.DrawRay(ray.origin, ray.direction * interactDistance, Color.red);
         }
 
         private void Update()
@@ -46,8 +72,8 @@ namespace Poop.Player
 
         private void HandleMove()
         {
-            float targetSpeed = inputManager.Run ? runSpeed : walkSpeed;
-            if (inputManager.Move == Vector2.zero) targetSpeed = 0.0f;
+            float targetSpeed = InputManager.Instance.Run ? runSpeed : walkSpeed;
+            if (InputManager.Instance.Move == Vector2.zero) targetSpeed = 0.0f;
 
             AccelerateSpeed(targetSpeed);
 
@@ -58,9 +84,9 @@ namespace Poop.Player
 
         private void HandleRotate()
         {
-            if (inputManager.Move == Vector2.zero) return;
+            if (InputManager.Instance.Move == Vector2.zero) return;
 
-            Vector3 lookDirection = new Vector3(inputManager.Move.x, 0.0f, inputManager.Move.y).normalized;
+            Vector3 lookDirection = new Vector3(InputManager.Instance.Move.x, 0.0f, InputManager.Instance.Move.y).normalized;
 
             targetRotation = Mathf.Atan2(lookDirection.x, lookDirection.z) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
             float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, RotationSmoothness);
@@ -85,13 +111,18 @@ namespace Poop.Player
 
         public float GetMoveAmount()
         {
-            float horizontalInput = inputManager.Move.x;
-            float verticalInput = inputManager.Move.y;
+            float horizontalInput = InputManager.Instance.Move.x;
+            float verticalInput = InputManager.Instance.Move.y;
 
             float moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
 
-            if (inputManager.Run) return moveAmount *= 2f;
+            if (InputManager.Instance.Run) return moveAmount *= 2f;
             else return moveAmount;
+        }
+
+        public PlayerType GetPlayerType()
+        {
+            return playerType;
         }
     }
 }
