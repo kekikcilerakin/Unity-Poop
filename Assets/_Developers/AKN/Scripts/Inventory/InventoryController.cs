@@ -7,45 +7,43 @@ namespace Poop.Player.Inventory
         [SerializeField] private Transform handTransform;
         [SerializeField] private Item itemInHand;
 
-
-
         public void SetItemInHand(Item item)
         {
+            if (item == null)
+            {
+                itemInHand = null;
+                return;
+            }
+
             if (itemInHand == null)
             {
                 itemInHand = item;
-                item.transform.SetParent(handTransform);
-                item.transform.localPosition = Vector3.zero;
-                item.HideCollider();
+                itemInHand.ParentToHand();
+                return;
             }
-            else //swap items
-            {
-                Vector3 newItemPosition = item.transform.position;
 
-                itemInHand.transform.SetParent(null);
-                itemInHand.transform.SetPositionAndRotation(newItemPosition, Quaternion.identity);
-                itemInHand.ShowCollider();
+            //Swap Items
+            Vector3 newItemPosition = item.transform.position;
 
-                item.transform.SetParent(handTransform);
-                item.transform.localPosition = Vector3.zero;
-
-                itemInHand = item;
-                itemInHand.HideCollider();
-            }
+            itemInHand.SwapPosition(newItemPosition);
+            itemInHand = item;
+            item.ParentToHand();
         }
 
         public void DropItem()
         {
-            itemInHand.transform.SetParent(null);
-            itemInHand.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
-            itemInHand.ShowCollider();
-
-            itemInHand = null;
+            itemInHand.UnparentFromHand();
+            SetItemInHand(null);
         }
 
         public Item GetItemInHand()
         {
             return itemInHand;
+        }
+
+        public Transform GetHandTransform()
+        {
+            return handTransform;
         }
     }
 }

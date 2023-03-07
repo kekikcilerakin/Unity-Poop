@@ -135,7 +135,7 @@ MonoBehaviour:
   CameraDistance: 4
   CameraCollisionFilter:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 128
   IgnoreTag: Player
   CameraRadius: 0.15
   DampingIntoCollision: 0
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 5216297633411520470}
   - component: {fileID: 8401099154229917043}
   - component: {fileID: 1189395328525374393}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: _BasePlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -207,13 +207,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightedItem: {fileID: 0}
+  highlightedTask: {fileID: 0}
   playerType: 0
   playerState: 0
   walkSpeed: 0
   runSpeed: 0
   interactableMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 128
   interactDistance: 6
 --- !u!114 &8401099154229917043
 MonoBehaviour:
