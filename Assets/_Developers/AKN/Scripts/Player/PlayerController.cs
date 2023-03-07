@@ -7,15 +7,15 @@ namespace Poop.Player
 {
     public enum PlayerType
     {
-        None,
-        Student,
-        Principal
+        None = 0,
+        Student = 1,
+        Principal = 2,
     }
 
     public enum PlayerState
     {
-        None,
-        DoingTask
+        None = 0,
+        DoingTask = 1,
     }
 
     public class PlayerController : MonoBehaviour
@@ -81,9 +81,17 @@ namespace Poop.Player
             Cursor.visible = false;
 
             InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
+            InputManager.Instance.OnDropAction += InputManager_OnDropAction;
         }
 
-        private void InputManager_OnInteractAction(object sender, System.EventArgs e)
+        private void InputManager_OnDropAction(object sender, EventArgs e)
+        {
+            if (!InventoryController.GetItemInHand()) return;
+
+            InventoryController.DropItem();
+        }
+
+        private void InputManager_OnInteractAction(object sender, EventArgs e)
         {
             if (highlightedItem == null) return;
 
@@ -124,25 +132,24 @@ namespace Poop.Player
 
         private void HandleInteraction()
         {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactableMask);
-            Item hitItem = hit.collider?.GetComponent<Item>();
-            Task hitTask = hit.collider?.GetComponent<Task>();
+                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactableMask);
+                Item hitItem = hit.collider?.GetComponent<Item>();
+                Task hitTask = hit.collider?.GetComponent<Task>();
 
-            if (hitItem != highlightedItem && hitItem != InventoryController.GetItemInHand())
-            {
-                SetHighlightedItem(hitItem);
-            }
-            else if (!hitSomething)
-            {
-                SetHighlightedItem(null);
-            }
+                if (hitItem != highlightedItem && hitItem != InventoryController.GetItemInHand() && playerType == PlayerType.Student)
+                {
+                    SetHighlightedItem(hitItem);
+                }
+                else if (!hitSomething)
+                {
+                    SetHighlightedItem(null);
+                }
 
-            /*else if (hitTask)
-            {
-                SetHighlightedTask(hitTask);
-            }*/
-            
+                /*else if (hitTask)
+                {
+                    SetHighlightedTask(hitTask);
+                }*/
         }
 
         private void AccelerateSpeed(float targetSpeed)

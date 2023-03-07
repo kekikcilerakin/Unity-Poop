@@ -9,6 +9,7 @@ namespace Poop.Manager
         public static InputManager Instance { get; private set; }
 
         public event EventHandler OnInteractAction;
+        public event EventHandler OnDropAction;
         
         private PlayerInputActions inputActions;
 
@@ -28,6 +29,7 @@ namespace Poop.Manager
             inputActions.Player.Run.canceled += OnRun;
 
             inputActions.Player.Interact.performed += Interact_performed;
+            inputActions.Player.DropItem.performed += DropItem_performed;
         }
 
         private void OnEnable()
@@ -58,6 +60,11 @@ namespace Poop.Manager
         private void Interact_performed(InputAction.CallbackContext obj)
         {
             OnInteractAction?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void DropItem_performed(InputAction.CallbackContext obj)
+        {
+            OnDropAction?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -7,6 +7,8 @@ namespace Poop.Player.Inventory
         [SerializeField] private Transform handTransform;
         [SerializeField] private Item itemInHand;
 
+
+
         public void SetItemInHand(Item item)
         {
             if (itemInHand == null)
@@ -30,6 +32,15 @@ namespace Poop.Player.Inventory
                 itemInHand = item;
                 itemInHand.HideCollider();
             }
+        }
+
+        public void DropItem()
+        {
+            itemInHand.transform.SetParent(null);
+            itemInHand.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
+            itemInHand.ShowCollider();
+
+            itemInHand = null;
         }
 
         public Item GetItemInHand()
