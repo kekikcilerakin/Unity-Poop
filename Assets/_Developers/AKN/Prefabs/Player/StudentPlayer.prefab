@@ -7,6 +7,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1189395328525374393, guid: 7c424f369e7bf7748b54f2013c67777a,
+        type: 3}
+      propertyPath: handTransform
+      value: 
+      objectReference: {fileID: 9016581333221196572}
     - target: {fileID: 5216297633411520470, guid: 7c424f369e7bf7748b54f2013c67777a,
         type: 3}
       propertyPath: runSpeed
@@ -182,6 +187,12 @@ PrefabInstance:
 --- !u!4 &5111567879376280676 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2766937993132524240, guid: 63f592864fda5664fad6ca1b9f266ce7,
+    type: 3}
+  m_PrefabInstance: {fileID: 6956316046411652788}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9016581333221196572 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2137125586314075560, guid: 63f592864fda5664fad6ca1b9f266ce7,
     type: 3}
   m_PrefabInstance: {fileID: 6956316046411652788}
   m_PrefabAsset: {fileID: 0}

@@ -206,10 +206,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28e1fe28f91e3c343bf92147a36651a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highlightedItem: {fileID: 0}
   playerType: 0
+  playerState: 0
   walkSpeed: 0
   runSpeed: 0
-  itemToInteract: {fileID: 0}
+  interactableMask:
+    serializedVersion: 2
+    m_Bits: 64
+  interactDistance: 6
 --- !u!114 &8401099154229917043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,7 +243,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c6d504346c200d46b4e2fc510444147, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  addItemIndex: 0
-  removeItemIndex: 0
-  itemSODatabase: {fileID: 11400000, guid: 4115cd375543287418d4b68964371b9b, type: 2}
-  itemsInInventory: []
+  handTransform: {fileID: 0}
+  itemInHand: {fileID: 0}

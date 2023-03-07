@@ -781,7 +781,7 @@ GameObject:
   - component: {fileID: 5323944913415440851}
   - component: {fileID: 6224021334925760082}
   m_Layer: 0
-  m_Name: StudentVisual
+  m_Name: Student_Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

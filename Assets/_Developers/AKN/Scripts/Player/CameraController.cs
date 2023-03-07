@@ -1,6 +1,5 @@
 using Cinemachine;
 using Poop.Manager;
-using Poop.Player.Inventory;
 using UnityEngine;
 
 namespace Poop.Player

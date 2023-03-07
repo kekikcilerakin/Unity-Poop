@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2195481590631500433}
   - component: {fileID: 2669791319804136581}
   - component: {fileID: 5872846548947986674}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: _BaseItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2195481590631500432}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.25, y: 0.25, z: 5.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -58,4 +58,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 600263f6de1438e458bbddf930da20d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemSO: {fileID: 0}
+  item: {fileID: 0}

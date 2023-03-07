@@ -1,5 +1,6 @@
 using Poop.Manager;
 using Poop.Player.Inventory;
+using System;
 using UnityEngine;
 
 namespace Poop.Player
@@ -11,9 +12,34 @@ namespace Poop.Player
         Principal
     }
 
+    public enum PlayerState
+    {
+        None,
+        DoingTask
+    }
+
     public class PlayerController : MonoBehaviour
     {
+        public static PlayerController Instance { get; private set; }
+
+        public InventoryController InventoryController { get; private set; }
+
+        [SerializeField] private Item highlightedItem;
+        public event EventHandler<OnHighlightedItemChangedEventArgs> OnHighlightedItemChanged;
+        public class OnHighlightedItemChangedEventArgs : EventArgs
+        {
+            public Item highlightedItem;
+        }
+
+        [SerializeField] private Task highlightedTask;
+        public event EventHandler<OnHighlightedTaskChangedEventArgs> OnHighlightedTaskChanged;
+        public class OnHighlightedTaskChangedEventArgs : EventArgs
+        {
+            public Task highlightedTask;
+        }
+
         [SerializeField] private PlayerType playerType;
+        [SerializeField] private PlayerState playerState;
 
         private CharacterController characterController;
 
@@ -22,7 +48,7 @@ namespace Poop.Player
         [Tooltip("Student = 2.8, Principal = 3")]
         [SerializeField] private float runSpeed = 0.0f;
 
-        [SerializeField] private LayerMask itemLayerMask;
+        [SerializeField] private LayerMask interactableMask;
         [SerializeField] private float interactDistance = 6f;
 
         #region Constant Variables
@@ -39,11 +65,17 @@ namespace Poop.Player
         private float rotationVelocity;
         #endregion
 
-        public virtual void Start()
+        private void Awake()
+        {
+            Instance = this;
+        }
+
+        public void Start()
         {
             if (walkSpeed == 0.0f || runSpeed == 0.0f) Debug.LogWarning("Walk and run speed are not set.");
 
             characterController = GetComponent<CharacterController>();
+            InventoryController = GetComponent<InventoryController>();
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -53,21 +85,17 @@ namespace Poop.Player
 
         private void InputManager_OnInteractAction(object sender, System.EventArgs e)
         {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit raycastHit, interactDistance, itemLayerMask))
-            {
-                if (raycastHit.transform.TryGetComponent(out Item item))
-                {
-                    item.Interact();
-                }
-            }
-            //Debug.DrawRay(ray.origin, ray.direction * interactDistance, Color.red);
+            if (highlightedItem == null) return;
+
+            highlightedItem.Interact();
+            SetHighlightedItem(null);
         }
 
         private void Update()
         {
             HandleMove();
             HandleRotate();
+            HandleInteraction();
         }
 
         private void HandleMove()
@@ -92,6 +120,29 @@ namespace Poop.Player
             float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, RotationSmoothness);
 
             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+        }
+
+        private void HandleInteraction()
+        {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactableMask);
+            Item hitItem = hit.collider?.GetComponent<Item>();
+            Task hitTask = hit.collider?.GetComponent<Task>();
+
+            if (hitItem != highlightedItem && hitItem != InventoryController.GetItemInHand())
+            {
+                SetHighlightedItem(hitItem);
+            }
+            else if (!hitSomething)
+            {
+                SetHighlightedItem(null);
+            }
+
+            /*else if (hitTask)
+            {
+                SetHighlightedTask(hitTask);
+            }*/
+            
         }
 
         private void AccelerateSpeed(float targetSpeed)
@@ -123,6 +174,26 @@ namespace Poop.Player
         public PlayerType GetPlayerType()
         {
             return playerType;
+        }
+
+        private void SetHighlightedItem(Item highlightedItem)
+        {
+            this.highlightedItem = highlightedItem;
+
+            OnHighlightedItemChanged?.Invoke(this, new OnHighlightedItemChangedEventArgs
+            {
+                highlightedItem = highlightedItem
+            });
+        }
+
+        private void SetHighlightedTask(Task highlightedTask)
+        {
+            this.highlightedTask = highlightedTask;
+
+            OnHighlightedTaskChanged?.Invoke(this, new OnHighlightedTaskChangedEventArgs
+            {
+                highlightedTask = highlightedTask
+            });
         }
     }
 }
