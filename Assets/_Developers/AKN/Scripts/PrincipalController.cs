@@ -1,6 +1,4 @@
-using Poop.Player;
-
-namespace Poop
+namespace Poop.Player
 {
     public class PrincipalController : PlayerControllerBase
     {

@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Poop
+namespace Poop.Network
 {
     public class NetworkUI : MonoBehaviour
     {
