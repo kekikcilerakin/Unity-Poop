@@ -1,5 +1,4 @@
 using Poop.Manager;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace Poop.Player
