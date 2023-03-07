@@ -10,6 +10,8 @@ namespace Poop.Player.Inventory
 
         private void Start()
         {
+            if (item == null) Debug.LogError("Item can't be null!");
+
             sphereCollider = GetComponent<SphereCollider>();
             rb = GetComponent<Rigidbody>();
         }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Poop.Player.Inventory
 {
-    [CreateAssetMenu(menuName = "Inventory/Item")]
+    [CreateAssetMenu(menuName = "Poop/Item")]
     public class ItemSO : ScriptableObject
     {
         public string itemName;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Poop.Player.Inventory
 {
-    //[CreateAssetMenu(menuName = "Inventory/Item Database")]
+    //[CreateAssetMenu(menuName = "Poop/Item Database")]
     public class ItemSODatabase : ScriptableObject
     {
         public List<ItemSO> itemSOList;
