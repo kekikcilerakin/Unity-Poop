@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Interact",
+                    "name": "InteractItem",
                     "type": "Button",
                     "id": "96a0e888-c12a-4776-93b7-9dda14e9ac65",
                     "expectedControlType": "Button",
@@ -45,6 +45,15 @@
                     "name": "DropItem",
                     "type": "Button",
                     "id": "087d87d8-2fcb-4522-9c85-897843f279f0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "InteractTask",
+                    "type": "Button",
+                    "id": "124d807b-c179-4712-911e-8b2b784b1d99",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -136,7 +145,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Interact",
+                    "action": "InteractItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -148,6 +157,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "DropItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4314b27f-701c-4186-a740-67a552e22bb3",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InteractTask",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

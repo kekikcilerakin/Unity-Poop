@@ -42,7 +42,7 @@ namespace Poop.Player
         [SerializeField] private float runSpeed = 0.0f;
 
         [SerializeField] private LayerMask interactableMask;
-        [SerializeField] private float interactDistance = 6f;
+        [SerializeField] private float itemInteractDistance = 6f;
 
         #region Constant Variables
         private const float Gravity = -9.81f;
@@ -73,18 +73,18 @@ namespace Poop.Player
 
         public void Start()
         {
-            InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
-            InputManager.Instance.OnDropAction += InputManager_OnDropAction;
+            InputManager.Instance.OnItemInteractAction += InputManager_OnItemInteractAction;
+            InputManager.Instance.OnItemDropAction += InputManager_OnItemDropAction;
         }
 
-        private void InputManager_OnDropAction(object sender, EventArgs e)
+        private void InputManager_OnItemDropAction(object sender, EventArgs e)
         {
             if (!InventoryController.GetItemInHand()) return;
 
             InventoryController.DropItem();
         }
 
-        private void InputManager_OnInteractAction(object sender, EventArgs e)
+        private void InputManager_OnItemInteractAction(object sender, EventArgs e)
         {
             if (highlightedItem == null) return;
 
@@ -126,7 +126,7 @@ namespace Poop.Player
         private void HandleInteraction()
         {
                 var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactableMask);
+                bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, itemInteractDistance, interactableMask);
                 Item hitItem = hit.collider?.GetComponent<Item>();
 
                 if (hitItem != highlightedItem && hitItem != InventoryController.GetItemInHand() && playerType == PlayerType.Student)

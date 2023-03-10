@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,14 +9,16 @@ namespace Poop.Manager
     {
         public static InputManager Instance { get; private set; }
 
-        public event EventHandler OnInteractAction;
-        public event EventHandler OnDropAction;
+        public event EventHandler OnItemInteractAction;
+        public event EventHandler OnItemDropAction;
         
         private PlayerInputActions inputActions;
 
         public Vector2 Move { get; private set; }
         public Vector2 Look { get; private set; }
         public bool Run { get; private set; }
+
+        public bool IsProgressing { get; private set; }
 
         private void Awake()
         {
@@ -28,8 +31,12 @@ namespace Poop.Manager
             inputActions.Player.Run.performed += OnRun;
             inputActions.Player.Run.canceled += OnRun;
 
-            inputActions.Player.Interact.performed += Interact_performed;
+            inputActions.Player.InteractItem.performed += InteractItem_performed;
             inputActions.Player.DropItem.performed += DropItem_performed;
+
+            inputActions.Player.InteractTask.performed += InteractTask_performed;
+
+            inputActions.Player.InteractTask.canceled += InteractTask_canceled;
         }
 
         private void OnEnable()
@@ -57,14 +64,24 @@ namespace Poop.Manager
             Run = context.ReadValueAsButton();
         }
 
-        private void Interact_performed(InputAction.CallbackContext obj)
+        private void InteractItem_performed(InputAction.CallbackContext obj)
         {
-            OnInteractAction?.Invoke(this, EventArgs.Empty);
+            OnItemInteractAction?.Invoke(this, EventArgs.Empty);
         }
 
         private void DropItem_performed(InputAction.CallbackContext obj)
         {
-            OnDropAction?.Invoke(this, EventArgs.Empty);
+            OnItemDropAction?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void InteractTask_performed(InputAction.CallbackContext obj)
+        {
+            IsProgressing = true;
+        }
+
+        private void InteractTask_canceled(InputAction.CallbackContext obj)
+        {
+            IsProgressing = false;
         }
     }
 }

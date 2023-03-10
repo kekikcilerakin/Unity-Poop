@@ -52,6 +52,7 @@ namespace Poop.Player.Inventory
             {
                 ItemInHand = itemInHand.GetItem()
             });
+
         }
 
         public void DropItem()

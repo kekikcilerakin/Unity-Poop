@@ -13,6 +13,7 @@ namespace Poop
         {
             item = transform.parent.GetComponent<Item>();
             outline = GetComponent<Outline>();
+
             PlayerController.Instance.OnHighlightedItemChanged += PlayerController_OnSelectedItemChanged;
         }
 
@@ -20,20 +21,20 @@ namespace Poop
         {
             if (e.HighlightedItem == item)
             {
-                Show();
+                ShowOutline();
             }
             else
             {
-                Hide();
+                HideOutline();
             }
         }
 
-        private void Show()
+        private void ShowOutline()
         {
             outline.enabled = true;
         }
 
-        private void Hide()
+        private void HideOutline()
         {
             outline.enabled = false;
         }
