@@ -18,7 +18,7 @@ namespace Poop
 
         private void PlayerController_OnSelectedItemChanged(object sender, PlayerController.OnHighlightedItemChangedEventArgs e)
         {
-            if (e.highlightedItem == item)
+            if (e.HighlightedItem == item)
             {
                 Show();
             }

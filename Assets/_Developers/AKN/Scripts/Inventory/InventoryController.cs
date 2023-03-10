@@ -1,17 +1,30 @@
+using System;
 using UnityEngine;
 
 namespace Poop.Player.Inventory
 {
     public class InventoryController : MonoBehaviour
     {
-        [SerializeField] private Transform handTransform;
         [SerializeField] private Item itemInHand;
+        public event EventHandler<OnItemInHandChangedEventArgs> OnItemInHandChanged;
+        public class OnItemInHandChangedEventArgs : EventArgs
+        {
+            public ItemSO ItemInHand;
+        }
+
+        [SerializeField] private Transform handTransform;
 
         public void SetItemInHand(Item item)
         {
             if (item == null)
             {
                 itemInHand = null;
+
+                OnItemInHandChanged?.Invoke(this, new OnItemInHandChangedEventArgs
+                {
+                    ItemInHand = null
+                });
+
                 return;
             }
 
@@ -19,6 +32,12 @@ namespace Poop.Player.Inventory
             {
                 itemInHand = item;
                 itemInHand.ParentToHand();
+
+                OnItemInHandChanged?.Invoke(this, new OnItemInHandChangedEventArgs
+                {
+                    ItemInHand = itemInHand.GetItem()
+                });
+
                 return;
             }
 
@@ -28,6 +47,11 @@ namespace Poop.Player.Inventory
             itemInHand.SwapPosition(newItemPosition);
             itemInHand = item;
             item.ParentToHand();
+
+            OnItemInHandChanged?.Invoke(this, new OnItemInHandChangedEventArgs
+            {
+                ItemInHand = itemInHand.GetItem()
+            });
         }
 
         public void DropItem()

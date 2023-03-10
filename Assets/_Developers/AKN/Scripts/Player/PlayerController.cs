@@ -28,14 +28,7 @@ namespace Poop.Player
         public event EventHandler<OnHighlightedItemChangedEventArgs> OnHighlightedItemChanged;
         public class OnHighlightedItemChangedEventArgs : EventArgs
         {
-            public Item highlightedItem;
-        }
-
-        [SerializeField] private Task highlightedTask;
-        public event EventHandler<OnHighlightedTaskChangedEventArgs> OnHighlightedTaskChanged;
-        public class OnHighlightedTaskChangedEventArgs : EventArgs
-        {
-            public Task highlightedTask;
+            public Item HighlightedItem;
         }
 
         [SerializeField] private PlayerType playerType;
@@ -68,10 +61,7 @@ namespace Poop.Player
         private void Awake()
         {
             Instance = this;
-        }
 
-        public void Start()
-        {
             if (walkSpeed == 0.0f || runSpeed == 0.0f) Debug.LogWarning("Walk and run speed are not set.");
 
             characterController = GetComponent<CharacterController>();
@@ -79,7 +69,10 @@ namespace Poop.Player
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
 
+        public void Start()
+        {
             InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
             InputManager.Instance.OnDropAction += InputManager_OnDropAction;
         }
@@ -135,7 +128,6 @@ namespace Poop.Player
                 var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactableMask);
                 Item hitItem = hit.collider?.GetComponent<Item>();
-                Task hitTask = hit.collider?.GetComponent<Task>();
 
                 if (hitItem != highlightedItem && hitItem != InventoryController.GetItemInHand() && playerType == PlayerType.Student)
                 {
@@ -145,11 +137,6 @@ namespace Poop.Player
                 {
                     SetHighlightedItem(null);
                 }
-
-                /*else if (hitTask)
-                {
-                    SetHighlightedTask(hitTask);
-                }*/
         }
 
         private void AccelerateSpeed(float targetSpeed)
@@ -189,17 +176,7 @@ namespace Poop.Player
 
             OnHighlightedItemChanged?.Invoke(this, new OnHighlightedItemChangedEventArgs
             {
-                highlightedItem = highlightedItem
-            });
-        }
-
-        private void SetHighlightedTask(Task highlightedTask)
-        {
-            this.highlightedTask = highlightedTask;
-
-            OnHighlightedTaskChanged?.Invoke(this, new OnHighlightedTaskChangedEventArgs
-            {
-                highlightedTask = highlightedTask
+                HighlightedItem = highlightedItem
             });
         }
     }
