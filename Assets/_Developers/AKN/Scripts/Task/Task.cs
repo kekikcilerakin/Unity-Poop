@@ -1,4 +1,3 @@
-using Poop.Manager;
 using Poop.Player;
 using Poop.Player.Inventory;
 using UnityEngine;
@@ -9,6 +8,12 @@ namespace Poop
     {
         [SerializeField] private ItemSO requiredItem;
         [SerializeField] private float completeTime;
+        [SerializeField] private bool isActiveTask;
+
+        public void Interact()
+        {
+            isActiveTask = true;
+        }
 
         public ItemSO GetRequiredItem()
         {
@@ -20,5 +25,14 @@ namespace Poop
             return completeTime;
         }
 
+        public bool GetIsActiveTask()
+        {
+            return isActiveTask;
+        }
+
+        public void SetIsActiveTask(bool isActive)
+        {
+            isActiveTask = isActive;
+        }
     }
 }

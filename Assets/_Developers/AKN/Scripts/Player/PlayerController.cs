@@ -31,6 +31,13 @@ namespace Poop.Player
             public Item HighlightedItem;
         }
 
+        [SerializeField] private Item highlightedTask;
+        public event EventHandler<OnHighlightedTaskChangedEventArgs> OnHighlightedTaskChanged;
+        public class OnHighlightedTaskChangedEventArgs : EventArgs
+        {
+            public Task HighlightedTask;
+        }
+
         [SerializeField] private PlayerType playerType;
         [SerializeField] private PlayerState playerState;
 

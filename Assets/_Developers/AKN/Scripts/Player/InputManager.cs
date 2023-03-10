@@ -34,7 +34,7 @@ namespace Poop.Manager
             inputActions.Player.InteractItem.performed += InteractItem_performed;
             inputActions.Player.DropItem.performed += DropItem_performed;
 
-            inputActions.Player.InteractTask.performed += InteractTask_performed;
+            inputActions.Player.InteractTask.started += InteractTask_started;
 
             inputActions.Player.InteractTask.canceled += InteractTask_canceled;
         }
@@ -74,7 +74,7 @@ namespace Poop.Manager
             OnItemDropAction?.Invoke(this, EventArgs.Empty);
         }
 
-        private void InteractTask_performed(InputAction.CallbackContext obj)
+        private void InteractTask_started(InputAction.CallbackContext obj)
         {
             IsProgressing = true;
         }

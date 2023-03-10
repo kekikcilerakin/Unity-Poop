@@ -23,7 +23,6 @@ namespace Poop.Player.Inventory
 
         public void Interact()
         {
-            Debug.Log("Hot damn" + item.itemName);
             PlayerController.Instance.InventoryController.SetItemInHand(this);
         }
 

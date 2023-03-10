@@ -24,6 +24,8 @@ namespace Poop
 
         private void Update()
         {
+            if (!task.GetIsActiveTask()) return;
+
             if (progress > task.GetCompleteTime()) return;
 
             if (InputManager.Instance.IsProgressing)
