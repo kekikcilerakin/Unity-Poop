@@ -31,7 +31,7 @@ namespace Poop.Player
             public Item HighlightedItem;
         }
 
-        [SerializeField] private Item highlightedTask;
+        [SerializeField] private Task highlightedTask;
         public event EventHandler<OnHighlightedTaskChangedEventArgs> OnHighlightedTaskChanged;
         public class OnHighlightedTaskChangedEventArgs : EventArgs
         {
@@ -50,6 +50,7 @@ namespace Poop.Player
 
         [SerializeField] private LayerMask interactableMask;
         [SerializeField] private float itemInteractDistance = 6f;
+        [SerializeField] private float taskInteractDistance = 6f;
 
         #region Constant Variables
         private const float Gravity = -9.81f;
@@ -82,6 +83,9 @@ namespace Poop.Player
         {
             InputManager.Instance.OnItemInteractAction += InputManager_OnItemInteractAction;
             InputManager.Instance.OnItemDropAction += InputManager_OnItemDropAction;
+
+            InputManager.Instance.OnTaskInteractStartedAction += InputManager_OnTaskInteractStartRequestedAction;
+            InputManager.Instance.OnTaskInteractCanceledAction += InputManager_OnTaskInteractCancelRequestedAction;
         }
 
         private void InputManager_OnItemDropAction(object sender, EventArgs e)
@@ -97,6 +101,49 @@ namespace Poop.Player
 
             highlightedItem.Interact();
             SetHighlightedItem(null);
+        }
+
+        private void InputManager_OnTaskInteractStartRequestedAction(object sender, EventArgs e)
+        {
+            if (InventoryController.GetItemInHand() == null)
+            {
+                Debug.Log($"You need an item to start interacting with tasks");
+                return;
+            }
+            if (highlightedTask == null)
+            {
+                Debug.Log($"You are not in range of any task.");
+                return;
+            }
+            if (highlightedTask.GetActivePlayer())
+            {
+                Debug.Log($"{highlightedTask} is already in progress by {highlightedTask.GetActivePlayer()}");
+                return;
+            }
+            if (highlightedTask.GetRequiredItem() != InventoryController.GetItemInHand().GetItemSO())
+            { 
+                Debug.Log($"Task requires {highlightedTask.GetRequiredItem()} but you have {InventoryController.GetItemInHand().GetItemSO()}");
+                return;
+            }
+
+            playerState = PlayerState.DoingTask;
+            Debug.Log($"PlayerState set to {playerState}");
+            highlightedTask.SetPlayer(this);
+            InputManager.Instance.DisableMovement();
+        }
+
+        private void InputManager_OnTaskInteractCancelRequestedAction(object sender, EventArgs e)
+        {
+            if(playerState != PlayerState.DoingTask)
+            {
+                Debug.LogWarning($"CancelInteract failed: playerState needs to be DoingTask to cancel an interact.");
+                return;
+            }
+
+            playerState = PlayerState.None;
+            Debug.Log($"PlayerState set to {playerState}");
+            highlightedTask.SetPlayer(null);
+            InputManager.Instance.EnableMovement();
         }
 
         private void Update()
@@ -132,18 +179,28 @@ namespace Poop.Player
 
         private void HandleInteraction()
         {
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, itemInteractDistance, interactableMask);
-                Item hitItem = hit.collider?.GetComponent<Item>();
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, itemInteractDistance, interactableMask);
+            Item hitItem = hit.collider?.GetComponent<Item>();
+            Task hitTask = hit.collider?.GetComponent<Task>();
 
-                if (hitItem != highlightedItem && hitItem != InventoryController.GetItemInHand() && playerType == PlayerType.Student)
-                {
-                    SetHighlightedItem(hitItem);
-                }
-                else if (!hitSomething)
-                {
-                    SetHighlightedItem(null);
-                }
+            if (hitItem != highlightedItem && hitItem != InventoryController.GetItemInHand() && playerType == PlayerType.Student)
+            {
+                SetHighlightedItem(hitItem);
+            }
+            else if (!hitSomething)
+            {
+                SetHighlightedItem(null);
+            }
+
+            if (hitTask != highlightedTask && playerType == PlayerType.Student)
+            {
+                SetHighlightedTask(hitTask);
+            }
+            else if (!hitSomething)
+            {
+                SetHighlightedTask(null);
+            }
         }
 
         private void AccelerateSpeed(float targetSpeed)
@@ -184,6 +241,16 @@ namespace Poop.Player
             OnHighlightedItemChanged?.Invoke(this, new OnHighlightedItemChangedEventArgs
             {
                 HighlightedItem = highlightedItem
+            });
+        }
+
+        private void SetHighlightedTask(Task highlightedTask)
+        {
+            this.highlightedTask = highlightedTask;
+
+            OnHighlightedTaskChanged?.Invoke(this, new OnHighlightedTaskChangedEventArgs
+            {
+                HighlightedTask = highlightedTask
             });
         }
     }

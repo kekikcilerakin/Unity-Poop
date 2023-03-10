@@ -1,7 +1,5 @@
-using Poop.Manager;
 using Poop.Player;
 using Poop.Player.Inventory;
-using System;
 using UnityEngine;
 
 namespace Poop
@@ -12,7 +10,6 @@ namespace Poop
         private Outline outline;
 
         [SerializeField] private float progress = 0;
-        public event EventHandler OnTaskCompleted;
 
         private void Start()
         {
@@ -20,29 +17,38 @@ namespace Poop
             outline = GetComponent<Outline>();
 
             PlayerController.Instance.InventoryController.OnItemInHandChanged += InventoryController_OnItemInHandChanged;
+            task.OnActivePlayerChanged += Task_OnActivePlayerChanged;
+        }
+
+        private void Task_OnActivePlayerChanged(object sender, Task.OnActivePlayerChangedEventArgs e)
+        {
+            Debug.Log($"ActivePlayerChanged to {e.ActivePlayer}");
+            if (e.ActivePlayer == null)
+            {
+                progress = 0;
+                Debug.Log($"Progress set to {progress}");
+            }
+        }
+
+        private void HandleProgress()
+        {
+            if (progress > task.GetCompleteTime()) return;
+
+            if (task.GetActivePlayer())
+            {
+                progress += Time.deltaTime;
+                Debug.Log((progress / task.GetCompleteTime()).ToString("P0"));
+
+                if (progress > task.GetCompleteTime())
+                {
+                    Debug.Log("Task Completed");
+                }
+            }
         }
 
         private void Update()
         {
-            if (!task.GetIsActiveTask()) return;
-
-            if (progress > task.GetCompleteTime()) return;
-
-            if (InputManager.Instance.IsProgressing)
-            {
-                progress += Time.deltaTime;
-                Debug.Log(Mathf.Ceil(progress) + "/" + task.GetCompleteTime());
-
-                if (progress > task.GetCompleteTime())
-                {
-                    OnTaskCompleted?.Invoke(this, EventArgs.Empty);
-                    Debug.Log("Task Completed");
-                }
-            }
-            else
-            {
-                progress = 0;
-            }
+            HandleProgress();
         }
 
         private void InventoryController_OnItemInHandChanged(object sender, InventoryController.OnItemInHandChangedEventArgs e)

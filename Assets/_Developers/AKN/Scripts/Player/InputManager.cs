@@ -11,14 +11,15 @@ namespace Poop.Manager
 
         public event EventHandler OnItemInteractAction;
         public event EventHandler OnItemDropAction;
+
+        public event EventHandler OnTaskInteractStartedAction;
+        public event EventHandler OnTaskInteractCanceledAction;
         
         private PlayerInputActions inputActions;
 
         public Vector2 Move { get; private set; }
         public Vector2 Look { get; private set; }
         public bool Run { get; private set; }
-
-        public bool IsProgressing { get; private set; }
 
         private void Awake()
         {
@@ -76,12 +77,26 @@ namespace Poop.Manager
 
         private void InteractTask_started(InputAction.CallbackContext obj)
         {
-            IsProgressing = true;
+            OnTaskInteractStartedAction?.Invoke(this, EventArgs.Empty);
         }
 
         private void InteractTask_canceled(InputAction.CallbackContext obj)
         {
-            IsProgressing = false;
+            OnTaskInteractCanceledAction?.Invoke(this, EventArgs.Empty);
+        }
+    
+        public void DisableMovement()
+        {
+            Move = Vector2.zero;
+            Look = Vector2.zero;
+            inputActions.Player.Look.Disable();
+            inputActions.Player.Move.Disable();
+        }
+
+        public void EnableMovement()
+        {
+            inputActions.Player.Look.Enable();
+            inputActions.Player.Move.Enable();
         }
     }
 }

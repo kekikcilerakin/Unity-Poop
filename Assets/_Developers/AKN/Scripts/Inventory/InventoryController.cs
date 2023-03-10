@@ -35,7 +35,7 @@ namespace Poop.Player.Inventory
 
                 OnItemInHandChanged?.Invoke(this, new OnItemInHandChangedEventArgs
                 {
-                    ItemInHand = itemInHand.GetItem()
+                    ItemInHand = itemInHand.GetItemSO()
                 });
 
                 return;
@@ -50,7 +50,7 @@ namespace Poop.Player.Inventory
 
             OnItemInHandChanged?.Invoke(this, new OnItemInHandChangedEventArgs
             {
-                ItemInHand = itemInHand.GetItem()
+                ItemInHand = itemInHand.GetItemSO()
             });
 
         }

@@ -1,5 +1,6 @@
 using Poop.Player;
 using Poop.Player.Inventory;
+using System;
 using UnityEngine;
 
 namespace Poop
@@ -8,11 +9,12 @@ namespace Poop
     {
         [SerializeField] private ItemSO requiredItem;
         [SerializeField] private float completeTime;
-        [SerializeField] private bool isActiveTask;
 
-        public void Interact()
+        [SerializeField] private PlayerController activePlayer;
+        public event EventHandler<OnActivePlayerChangedEventArgs> OnActivePlayerChanged;
+        public class OnActivePlayerChangedEventArgs : EventArgs
         {
-            isActiveTask = true;
+            public PlayerController ActivePlayer;
         }
 
         public ItemSO GetRequiredItem()
@@ -25,14 +27,26 @@ namespace Poop
             return completeTime;
         }
 
-        public bool GetIsActiveTask()
+        public PlayerController GetActivePlayer()
         {
-            return isActiveTask;
+            return activePlayer;
         }
 
-        public void SetIsActiveTask(bool isActive)
+        public void SetPlayer(PlayerController player)
         {
-            isActiveTask = isActive;
+            this.activePlayer = player;
+
+            if (player == null)
+            {
+                this.activePlayer = null;
+            }
+
+            OnActivePlayerChanged?.Invoke(this, new OnActivePlayerChangedEventArgs
+            {
+                ActivePlayer = activePlayer
+            });
         }
+
+
     }
 }

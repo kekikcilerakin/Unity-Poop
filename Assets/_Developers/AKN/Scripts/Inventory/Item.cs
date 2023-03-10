@@ -16,7 +16,7 @@ namespace Poop.Player.Inventory
             rb = GetComponent<Rigidbody>();
         }
 
-        public ItemSO GetItem()
+        public ItemSO GetItemSO()
         {
             return item;
         }
