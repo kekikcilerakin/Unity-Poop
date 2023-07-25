@@ -32,17 +32,25 @@ namespace Poop
 
         private void HandleProgress()
         {
+            if (task.GetIsTaskCompleted()) return;
+
             if (progress > task.GetCompleteTime()) return;
 
-            if (task.GetActivePlayer())
-            {
-                progress += Time.deltaTime;
-                Debug.Log((progress / task.GetCompleteTime()).ToString("P0"));
+            if (!task.GetActivePlayer()) return;
 
-                if (progress > task.GetCompleteTime())
-                {
-                    Debug.Log("Task Completed");
-                }
+            progress += Time.deltaTime;
+
+            Debug.Log((progress / task.GetCompleteTime()).ToString("P0"));
+
+            if (progress > task.GetCompleteTime())
+            {
+                Debug.Log("Task Completed");
+                task.SetIsTaskCompleted(true);
+                HideOutline();
+                PlayerController.Instance.InventoryController.GetItemInHand().SetHasItemBeenUsed(true);
+                PlayerController.Instance.InventoryController.DropItem();
+
+                //DÜZENLENECEK
             }
         }
 
@@ -53,7 +61,7 @@ namespace Poop
 
         private void InventoryController_OnItemInHandChanged(object sender, InventoryController.OnItemInHandChangedEventArgs e)
         {
-            if (task.GetRequiredItem() == e.ItemInHand)
+            if (task.GetRequiredItem() == e.ItemInHand && !task.GetIsTaskCompleted())
             {
                 ShowOutline();
             }

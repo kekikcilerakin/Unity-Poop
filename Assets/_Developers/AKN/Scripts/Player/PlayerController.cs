@@ -75,8 +75,8 @@ namespace Poop.Player
             characterController = GetComponent<CharacterController>();
             InventoryController = GetComponent<InventoryController>();
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
         }
 
         public void Start()
@@ -184,7 +184,7 @@ namespace Poop.Player
             Item hitItem = hit.collider?.GetComponent<Item>();
             Task hitTask = hit.collider?.GetComponent<Task>();
 
-            if (hitItem != highlightedItem && hitItem != InventoryController.GetItemInHand() && playerType == PlayerType.Student)
+            if (hitItem != highlightedItem && hitItem != InventoryController.GetItemInHand() && !hitItem.GetHasItemBeenUsed() && playerType == PlayerType.Student)
             {
                 SetHighlightedItem(hitItem);
             }

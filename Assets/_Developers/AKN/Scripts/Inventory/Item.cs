@@ -8,6 +8,8 @@ namespace Poop.Player.Inventory
         private SphereCollider sphereCollider;
         private Rigidbody rb;
 
+        [SerializeField] bool hasItemBeenUsed = false;
+
         private void Start()
         {
             if (item == null) Debug.LogError("Item can't be null!");
@@ -21,8 +23,20 @@ namespace Poop.Player.Inventory
             return item;
         }
 
+        public bool GetHasItemBeenUsed()
+        {
+            return hasItemBeenUsed;
+        }
+
+        public void SetHasItemBeenUsed(bool value)
+        {
+            hasItemBeenUsed = value;
+        }
+
         public void Interact()
         {
+            if (hasItemBeenUsed) return;
+
             PlayerController.Instance.InventoryController.SetItemInHand(this);
         }
 

@@ -10,6 +10,8 @@ namespace Poop
         [SerializeField] private ItemSO requiredItem;
         [SerializeField] private float completeTime;
 
+        [SerializeField] private bool isTaskCompleted;
+
         [SerializeField] private PlayerController activePlayer;
         public event EventHandler<OnActivePlayerChangedEventArgs> OnActivePlayerChanged;
         public class OnActivePlayerChangedEventArgs : EventArgs
@@ -30,6 +32,16 @@ namespace Poop
         public PlayerController GetActivePlayer()
         {
             return activePlayer;
+        }
+
+        public bool GetIsTaskCompleted()
+        {
+            return isTaskCompleted;
+        }
+
+        public void SetIsTaskCompleted(bool value)
+        {
+            isTaskCompleted = value;
         }
 
         public void SetPlayer(PlayerController player)
